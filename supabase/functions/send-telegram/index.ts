@@ -15,16 +15,13 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { name, email, phone, service, time, notes } = await req.json();
+    const { name, phone, notes } = await req.json();
 
     const lines = [
       "📋 <b>Yangi buyurtma!</b>",
       "",
       `👤 <b>Ism:</b> ${name || "—"}`,
-      `📧 <b>Email:</b> ${email || "—"}`,
       `📞 <b>Telefon:</b> ${phone || "—"}`,
-      `☕ <b>Xizmat:</b> ${service || "—"}`,
-      `🕐 <b>Qulay vaqt:</b> ${time || "—"}`,
       `💬 <b>Izoh:</b> ${notes || "—"}`,
     ];
 

@@ -13,7 +13,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 export default function Hero() {
   const { t } = useLang();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', service: '', time: '', notes: '' });
+  const [form, setForm] = useState({ name: '', phone: '', notes: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -53,7 +53,7 @@ export default function Hero() {
     }
     setLoading(false);
     setSubmitted(true);
-    setForm({ name: '', email: '', phone: '', service: '', time: '', notes: '' });
+    setForm({ name: '', phone: '', notes: '' });
     setTimeout(() => setSubmitted(false), 5000);
   };
 
@@ -160,32 +160,11 @@ export default function Hero() {
                     className={inputClass}
                   />
                   <input
-                    type="email"
-                    placeholder={t('hero.form.email')}
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className={inputClass}
-                  />
-                  <input
                     type="tel"
                     placeholder={t('hero.form.phone')}
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     required
-                    className={inputClass}
-                  />
-                  <input
-                    type="text"
-                    placeholder={t('hero.form.service')}
-                    value={form.service}
-                    onChange={(e) => setForm({ ...form, service: e.target.value })}
-                    className={inputClass}
-                  />
-                  <input
-                    type="text"
-                    placeholder={t('hero.form.time')}
-                    value={form.time}
-                    onChange={(e) => setForm({ ...form, time: e.target.value })}
                     className={inputClass}
                   />
                   {/* Notes with animated placeholder */}
