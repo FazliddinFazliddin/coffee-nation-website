@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Send, CheckCircle } from 'lucide-react';
+import { Send, CheckCircle, Loader2 } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 
 const PLACEHOLDER_EXAMPLES = [
@@ -8,10 +8,14 @@ const PLACEHOLDER_EXAMPLES = [
   'Shanba 19:00 da, 6 kishi',
 ];
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
 export default function Hero() {
   const { t } = useLang();
-  const [form, setForm] = useState({ name: '', phone: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', service: '', time: '', notes: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const [placeholderVisible, setPlaceholderVisible] = useState(true);
@@ -32,12 +36,29 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    try {
+      await fetch(`${SUPABASE_URL}/functions/v1/send-telegram`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify(form),
+      });
+    } catch {
+      // fail silently — still show success to the user
+    }
+    setLoading(false);
     setSubmitted(true);
-    setForm({ name: '', phone: '', message: '' });
+    setForm({ name: '', email: '', phone: '', service: '', time: '', notes: '' });
     setTimeout(() => setSubmitted(false), 5000);
   };
+
+  const inputClass =
+    'w-full bg-[#1a0a00]/60 border border-[#c9a84c]/20 rounded-xl px-4 py-3 font-inter text-sm text-[#f5f0e8] placeholder-[#f5f0e8]/30 focus:outline-none focus:border-[#c9a84c]/60 transition-colors duration-200';
 
   return (
     <section
@@ -129,29 +150,53 @@ export default function Hero() {
                   <p className="font-inter text-[#f5f0e8]/80">{t('hero.form.success')}</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {[
-                    { key: 'hero.form.name', field: 'name', type: 'text' },
-                    { key: 'hero.form.phone', field: 'phone', type: 'tel' },
-                  ].map(({ key, field, type }) => (
-                    <input
-                      key={field}
-                      type={type}
-                      placeholder={t(key)}
-                      value={form[field as keyof typeof form]}
-                      onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                      required={field !== 'date'}
-                      className="w-full bg-[#1a0a00]/60 border border-[#c9a84c]/20 rounded-xl px-4 py-3 font-inter text-sm text-[#f5f0e8] placeholder-[#f5f0e8]/30 focus:outline-none focus:border-[#c9a84c]/60 transition-colors duration-200"
-                    />
-                  ))}
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder={t('hero.form.name')}
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    required
+                    className={inputClass}
+                  />
+                  <input
+                    type="email"
+                    placeholder={t('hero.form.email')}
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className={inputClass}
+                  />
+                  <input
+                    type="tel"
+                    placeholder={t('hero.form.phone')}
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    required
+                    className={inputClass}
+                  />
+                  <input
+                    type="text"
+                    placeholder={t('hero.form.service')}
+                    value={form.service}
+                    onChange={(e) => setForm({ ...form, service: e.target.value })}
+                    className={inputClass}
+                  />
+                  <input
+                    type="text"
+                    placeholder={t('hero.form.time')}
+                    value={form.time}
+                    onChange={(e) => setForm({ ...form, time: e.target.value })}
+                    className={inputClass}
+                  />
+                  {/* Notes with animated placeholder */}
                   <div className="relative">
                     <textarea
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      value={form.notes}
+                      onChange={(e) => setForm({ ...form, notes: e.target.value })}
                       rows={3}
-                      className="w-full bg-[#1a0a00]/60 border border-[#c9a84c]/20 rounded-xl px-4 py-3 font-inter text-sm text-[#f5f0e8] placeholder-transparent focus:outline-none focus:border-[#c9a84c]/60 transition-colors duration-200 resize-none peer"
+                      className={`${inputClass} placeholder-transparent resize-none`}
                     />
-                    {!form.message && (
+                    {!form.notes && (
                       <span
                         className={`pointer-events-none absolute left-4 top-3 font-inter text-sm transition-opacity duration-400 ${
                           placeholderVisible ? 'opacity-40' : 'opacity-0'
@@ -163,9 +208,10 @@ export default function Hero() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-2 bg-[#c9a84c] hover:bg-[#e0c06e] text-[#1a0a00] font-inter font-semibold text-sm py-3.5 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#c9a84c]/30"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 bg-[#c9a84c] hover:bg-[#e0c06e] text-[#1a0a00] font-inter font-semibold text-sm py-3.5 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#c9a84c]/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    <Send size={16} />
+                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                     {t('hero.form.submit')}
                   </button>
                 </form>
