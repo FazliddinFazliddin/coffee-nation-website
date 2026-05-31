@@ -13,11 +13,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const token = process.env.8784819583:AAHR0xquL8JdlKPmlRSXmvIZ8FHRwpuMcTA;
+    const chatId = process.env.-5166587281;
 
     if (!token || !chatId) {
-      console.error('Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID');
+      console.error('Missing 8784819583:AAHR0xquL8JdlKPmlRSXmvIZ8FHRwpuMcTA or -5166587281');
       return NextResponse.json(
         { error: 'Server konfiguratsiya xatosi' },
         { status: 500 }
@@ -31,8 +31,7 @@ export async function POST(request: NextRequest) {
 👤 <b>Ism:</b> ${name}
 📞 <b>Telefon:</b> ${phone}
 🕐 <b>Vaqt:</b> ${time}
-📧 <b>Email:</b> ${email || '—'}
-📝 <b>Izoh:</b> ${note || '—'}
+
 
 📅 <b>Yuborildi:</b> ${new Date().toLocaleString('uz-UZ')}
     `.trim();
