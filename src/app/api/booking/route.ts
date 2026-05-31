@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     // Send to Telegram
     const telegramRes = await fetch(
-      `https://api.telegram.org/bot${token}/sendMessage`,
+      `https://api.telegram.org/bot${8784819583:AAHR0xquL8JdlKPmlRSXmvIZ8FHRwpuMcTA}/sendMessage`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
