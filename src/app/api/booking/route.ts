@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, phone, time, email, note } = body;
+    const { name, phone, time,} = body;
 
     // Validate required fields
     if (!name || !phone || !time) {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const token = process.env.8784819583:AAHR0xquL8JdlKPmlRSXmvIZ8FHRwpuMcTA;
     const chatId = process.env.-5166587281;
 
-    if (!token || !chatId) {
+    if (!8784819583:AAHR0xquL8JdlKPmlRSXmvIZ8FHRwpuMcTA || !-5166587281) {
       console.error('Missing 8784819583:AAHR0xquL8JdlKPmlRSXmvIZ8FHRwpuMcTA or -5166587281');
       return NextResponse.json(
         { error: 'Server konfiguratsiya xatosi' },
